@@ -5,6 +5,7 @@ background;obj\Debug\net8.0-android\res\mipmap-anydpi-v26\appicon.xml
 Button;obj\Debug\net8.0-android\res\layout\activity_add_reminder.xml
 Button;obj\Debug\net8.0-android\res\layout\activity_main.xml
 cache-path;E:\GitHub\Remindly\src\Remindly\obj\Debug\net8.0-android\lp\56\jl\res\xml\xamarin_essentials_fileprovider_file_paths.xml
+CheckBox;obj\Debug\net8.0-android\res\layout\reminder_item.xml
 color;obj\Debug\net8.0-android\res\values\colors.xml
 color;obj\Debug\net8.0-android\res\values\ic_launcher_background.xml
 com.google.android.material.card.MaterialCardView;obj\Debug\net8.0-android\res\layout\activity_add_reminder.xml

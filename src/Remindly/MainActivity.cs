@@ -12,6 +12,8 @@ using Remindly.Services;
 using System.Collections.Generic;
 using System.Linq;
 using Android.Views;
+using Android.Graphics;
+using Android.OS;
 
 [assembly: UsesPermission(Android.Manifest.Permission.PostNotifications)]
 [assembly: UsesPermission(Android.Manifest.Permission.ScheduleExactAlarm)]
@@ -64,15 +66,13 @@ namespace Remindly
             _listView.ItemClick += (sender, e) => 
             {
                 var reminder = _reminders[e.Position];
-                var intent = new Intent(this, typeof(AddReminderActivity));
-                intent.PutExtra("REMINDER_ID", reminder.Id);
-                StartActivityForResult(intent, 1);
-            };
-
-            _listView.ItemLongClick += (sender, e) => 
-            {
-                var reminder = _reminders[e.Position];
-                ShowDeleteDialog(reminder);
+                // Otwórz edycję tylko jeśli przypomnienie nie jest przestarzałe
+                if (reminder.ReminderDate >= DateTime.Now)
+                {
+                    var intent = new Intent(this, typeof(AddReminderActivity));
+                    intent.PutExtra("REMINDER_ID", reminder.Id);
+                    StartActivityForResult(intent, 1);
+                }
             };
         }
 
@@ -99,45 +99,6 @@ namespace Remindly
             }
         }
 
-        private void ShowDeleteDialog(Reminder reminder)
-        {
-            new AlertDialog.Builder(this)
-                .SetTitle("Usuwanie przypomnienia")
-                .SetMessage($"Czy na pewno chcesz usunąć: {reminder.Title}?")
-                .SetPositiveButton("Tak", (dialog, which) => DeleteReminder(reminder))
-                .SetNegativeButton("Nie", (IDialogInterfaceOnClickListener)null)
-                .Show();
-        }
-
-        private void DeleteReminder(Reminder reminder)
-        {
-            try
-            {
-                using (var db = new AppDbContext())
-                {
-                    var item = db.Reminders.Find(reminder.Id);
-                    if (item != null)
-                    {
-                        _reminderService.CancelNotification(item.Id);
-                        db.Reminders.Remove(item);
-                        db.SaveChanges();
-                        LoadReminders();
-                        Toast.MakeText(this, "Usunięto przypomnienie", ToastLength.Short).Show();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Toast.MakeText(this, $"Błąd: {ex.Message}", ToastLength.Long).Show();
-            }
-        }
-
-        protected override void OnResume()
-        {
-            base.OnResume();
-            LoadReminders();
-        }
-
         private void LoadReminders()
         {
             using (var db = new AppDbContext())
@@ -151,6 +112,12 @@ namespace Remindly
                     _reminderService.ScheduleNotification(reminder);
                 }
             }
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+            LoadReminders();
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)

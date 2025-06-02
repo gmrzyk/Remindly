@@ -20,15 +20,15 @@ public final class R {
 	}
 	public static final class id {
 		public static final int bottom = 0x7f080060;
-		public static final int end = 0x7f0800ba;
-		public static final int left = 0x7f0800f8;
-		public static final int none = 0x7f080148;
-		public static final int right = 0x7f08017e;
-		public static final int start = 0x7f0801b6;
-		public static final int top = 0x7f0801e7;
+		public static final int end = 0x7f0800bb;
+		public static final int left = 0x7f0800f9;
+		public static final int none = 0x7f080149;
+		public static final int right = 0x7f08017f;
+		public static final int start = 0x7f0801b7;
+		public static final int top = 0x7f0801e8;
 	}
 	public static final class style {
-		public static final int Widget_Support_CoordinatorLayout = 0x7f100469;
+		public static final int Widget_Support_CoordinatorLayout = 0x7f10046a;
 	}
 	public static final class styleable {
 		public static final int[] CoordinatorLayout = new int[] { 0x7f03026f, 0x7f030400 };

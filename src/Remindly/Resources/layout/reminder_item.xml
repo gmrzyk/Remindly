@@ -39,5 +39,14 @@
             android:layout_marginTop="8dp"
             android:textSize="14sp"
             android:textColor="#424242"/>
+
+        <!-- Dodany checkbox do usuwania -->
+        <CheckBox
+            android:id="@+id/deleteCheckbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Usuń"
+            android:visibility="gone"/>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

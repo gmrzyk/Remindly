@@ -9,4 +9,6 @@
     <color name="background">#FAFAFA</color>
     <color name="surface">#FFFFFF</color>
     <color name="white">#FFFFFF</color>
+    <color name="expired_reminder_bg">#F5F5F5</color>
+    <color name="expired_reminder_text">#9E9E9E</color>
 </resources>
