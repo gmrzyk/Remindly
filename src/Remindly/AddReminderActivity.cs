@@ -1,8 +1,9 @@
-﻿using Android.App;
+﻿﻿using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Widget;
 using Remindly.Data;
+using Remindly.Services;
 using System;
 
 namespace Remindly
@@ -15,6 +16,7 @@ namespace Remindly
         private DatePicker _datePicker;
         private TimePicker _timePicker;
         private int? _reminderId;
+        private ReminderService _reminderService;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -26,6 +28,7 @@ namespace Remindly
             _datePicker = FindViewById<DatePicker>(Resource.Id.datePicker);
             _timePicker = FindViewById<TimePicker>(Resource.Id.timePicker);
             
+            _reminderService = new ReminderService(this);
             _reminderId = Intent.GetIntExtra("REMINDER_ID", -1);
             var saveButton = FindViewById<Button>(Resource.Id.btnSave);
 
@@ -87,6 +90,8 @@ namespace Remindly
                     reminder = db.Reminders.Find(_reminderId);
                     if (reminder == null)
                         throw new Exception("Nie znaleziono przypomnienia do edycji");
+                    
+                    _reminderService.CancelNotification(reminder.Id);
                 }
                 else
                 {
@@ -99,6 +104,11 @@ namespace Remindly
                 reminder.ReminderDate = reminderDate;
 
                 db.SaveChanges();
+                
+                if (reminder.ReminderDate > DateTime.Now)
+                {
+                    _reminderService.ScheduleNotification(reminder);
+                }
             }
         }
     }

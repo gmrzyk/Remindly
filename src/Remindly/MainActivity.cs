@@ -14,6 +14,8 @@ using System.Linq;
 using Android.Views;
 
 [assembly: UsesPermission(Android.Manifest.Permission.PostNotifications)]
+[assembly: UsesPermission(Android.Manifest.Permission.ScheduleExactAlarm)]
+[assembly: UsesPermission(Android.Manifest.Permission.UseExactAlarm)]
 
 namespace Remindly
 {
@@ -21,30 +23,40 @@ namespace Remindly
     public class MainActivity : Activity
     {
         private const int NotificationPermissionRequestCode = 1000;
+        private const int AlarmPermissionRequestCode = 1001;
         private ListView _listView;
         private ReminderAdapter _adapter;
         private List<Reminder> _reminders = new List<Reminder>();
         private ReminderService _reminderService;
-        
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
-            var btnAdd = FindViewById<Button>(Resource.Id.btnAdd);
-            btnAdd.Visibility = ViewStates.Visible;
-            
+
+            // Inicjalizacja kanału powiadomień
             NotificationHelper.CreateNotificationChannel(this);
 
             _reminderService = new ReminderService(this);
-            
-            CheckAndRequestNotificationPermission();
 
+            // Sprawdź i poproś o uprawnienia
+            CheckAndRequestPermissions();
+
+            // Inicjalizacja UI
+            InitializeUI();
+
+            // Załaduj przypomnienia
+            LoadReminders();
+        }
+
+        private void InitializeUI()
+        {
             _listView = FindViewById<ListView>(Resource.Id.reminderListView);
             _adapter = new ReminderAdapter(this, _reminders);
             _listView.Adapter = _adapter;
 
-            FindViewById<Button>(Resource.Id.btnAdd).Click += (s, e) => 
+            var btnAdd = FindViewById<Button>(Resource.Id.btnAdd);
+            btnAdd.Click += (s, e) => 
             {
                 StartActivity(new Intent(this, typeof(AddReminderActivity)));
             };
@@ -62,17 +74,27 @@ namespace Remindly
                 var reminder = _reminders[e.Position];
                 ShowDeleteDialog(reminder);
             };
-
-            LoadReminders();
         }
 
-        private void CheckAndRequestNotificationPermission()
+        private void CheckAndRequestPermissions()
         {
+            // Uprawnienia do powiadomień (Android 13+)
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
             {
                 if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.PostNotifications) != Permission.Granted)
                 {
                     RequestPermissions(new[] { Manifest.Permission.PostNotifications }, NotificationPermissionRequestCode);
+                }
+            }
+
+            // Uprawnienia do dokładnych alarmów (Android 12+)
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.S)
+            {
+                var alarmManager = GetSystemService(AlarmService) as AlarmManager;
+                if (!alarmManager.CanScheduleExactAlarms())
+                {
+                    var intent = new Intent(Android.Provider.Settings.ActionRequestScheduleExactAlarm);
+                    StartActivity(intent);
                 }
             }
         }
@@ -122,6 +144,12 @@ namespace Remindly
             {
                 _reminders = db.Reminders.OrderBy(r => r.ReminderDate).ToList();
                 _adapter.UpdateData(_reminders);
+
+                // Ponownie zaplanuj powiadomienia (na wypadek restartu urządzenia)
+                foreach (var reminder in _reminders.Where(r => r.ReminderDate > DateTime.Now))
+                {
+                    _reminderService.ScheduleNotification(reminder);
+                }
             }
         }
 

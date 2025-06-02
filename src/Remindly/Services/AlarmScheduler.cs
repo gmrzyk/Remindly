@@ -28,15 +28,19 @@ namespace Remindly.Services
             {
                 alarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, triggerTime, pendingIntent);
             }
-            else
+            else if (Build.VERSION.SdkInt >= BuildVersionCodes.Kitkat)
             {
                 alarmManager.SetExact(AlarmType.RtcWakeup, triggerTime, pendingIntent);
+            }
+            else
+            {
+                alarmManager.Set(AlarmType.RtcWakeup, triggerTime, pendingIntent);
             }
         }
 
         private static long GetDateTimeInMillis(DateTime dateTime)
         {
-            var utcTime = dateTime.ToUniversalTime();
+            var utcTime = TimeZoneInfo.ConvertTimeToUtc(dateTime);
             var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             return (long)(utcTime - epoch).TotalMilliseconds;
         }
