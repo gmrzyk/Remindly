@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Remindly")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+cb2b4af5d9f0a9550ea4767a035a429a2235482e")]
 [assembly: System.Reflection.AssemblyProductAttribute("Remindly")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Remindly")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

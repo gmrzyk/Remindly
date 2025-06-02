@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "YWtJcsSw4nQ=",
+  "dgSpecHash": "RmzB6OFuH1I=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Grzegorz\\RiderProjects\\Remindly\\Remindly\\Remindly.csproj",
+  "projectFilePath": "E:\\GitHub\\Remindly\\src\\Remindly\\Remindly.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Grzegorz\\.nuget\\packages\\microsoft.data.sqlite.core\\8.0.14\\microsoft.data.sqlite.core.8.0.14.nupkg.sha512",
     "C:\\Users\\Grzegorz\\.nuget\\packages\\microsoft.entityframeworkcore\\8.0.14\\microsoft.entityframeworkcore.8.0.14.nupkg.sha512",

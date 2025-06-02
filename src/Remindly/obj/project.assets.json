@@ -4096,11 +4096,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Grzegorz\\RiderProjects\\Remindly\\Remindly\\Remindly.csproj",
+      "projectUniqueName": "E:\\GitHub\\Remindly\\src\\Remindly\\Remindly.csproj",
       "projectName": "Remindly",
-      "projectPath": "C:\\Users\\Grzegorz\\RiderProjects\\Remindly\\Remindly\\Remindly.csproj",
+      "projectPath": "E:\\GitHub\\Remindly\\src\\Remindly\\Remindly.csproj",
       "packagesPath": "C:\\Users\\Grzegorz\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Grzegorz\\RiderProjects\\Remindly\\Remindly\\obj\\",
+      "outputPath": "E:\\GitHub\\Remindly\\src\\Remindly\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "X:\\Microsoft Visual Studio\\Shared\\NuGetPackages"

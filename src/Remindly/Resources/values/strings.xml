@@ -2,8 +2,11 @@
 <resources>
     <string name="app_name">Remindly</string>
     <string name="add_reminder">Dodaj przypomnienie</string>
-    <string name="reminder_list">Lista przypomnień</string>
     <string name="title_hint">Tytuł</string>
     <string name="notes_hint">Notatki</string>
     <string name="save_reminder">Zapisz przypomnienie</string>
+    <string name="delete_confirm">Usunąć przypomnienie?</string>
+    <string name="delete_yes">Tak</string>
+    <string name="delete_no">Nie</string>
+    <string name="deleted_message">Usunięto przypomnienie</string>
 </resources>

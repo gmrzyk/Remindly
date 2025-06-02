@@ -6,6 +6,17 @@ namespace Remindly.Data
 {
     public class AppDbContext : DbContext
     {
+        private static bool _created = false;
+
+        public AppDbContext()
+        {
+            if (!_created)
+            {
+                _created = true;
+                Database.EnsureCreated();
+            }
+        }
+
         public DbSet<Reminder> Reminders { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

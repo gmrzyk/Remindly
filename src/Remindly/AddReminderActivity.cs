@@ -1,4 +1,5 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.OS;
 using Android.Widget;
 using Remindly.Data;
@@ -6,39 +7,95 @@ using System;
 
 namespace Remindly
 {
-    [Activity(Label = "Dodaj przypomnienie")]
+    [Activity(Label = "Dodaj/Edytuj przypomnienie")]
     public class AddReminderActivity : Activity
     {
-        protected override async void OnCreate(Bundle savedInstanceState)
+        private EditText _titleInput;
+        private EditText _notesInput;
+        private DatePicker _datePicker;
+        private TimePicker _timePicker;
+        private int? _reminderId;
+
+        protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_add_reminder);
 
-            var title = FindViewById<EditText>(Resource.Id.inputTitle);
-            var notes = FindViewById<EditText>(Resource.Id.inputNotes);
-            var datePicker = FindViewById<DatePicker>(Resource.Id.datePicker);
-            var timePicker = FindViewById<TimePicker>(Resource.Id.timePicker);
+            _titleInput = FindViewById<EditText>(Resource.Id.inputTitle);
+            _notesInput = FindViewById<EditText>(Resource.Id.inputNotes);
+            _datePicker = FindViewById<DatePicker>(Resource.Id.datePicker);
+            _timePicker = FindViewById<TimePicker>(Resource.Id.timePicker);
+            var saveButton = FindViewById<Button>(Resource.Id.btnSave);
 
-            FindViewById<Button>(Resource.Id.btnSave).Click += async (s, e) =>
+            _reminderId = Intent.GetIntExtra("REMINDER_ID", -1);
+            if (_reminderId != -1)
             {
-                var reminder = new Reminder
+                LoadReminderData();
+                saveButton.Text = "Zaktualizuj";
+            }
+
+            saveButton.Click += (s, e) => SaveReminder();
+        }
+
+        private void LoadReminderData()
+        {
+            using (var db = new AppDbContext())
+            {
+                var reminder = db.Reminders.Find(_reminderId);
+                if (reminder != null)
                 {
-                    Title = title.Text,
-                    Notes = notes.Text,
-                    ReminderDate = new DateTime(datePicker.Year, datePicker.Month + 1, datePicker.DayOfMonth,
-                        timePicker.Hour, timePicker.Minute, 0)
-                };
+                    _titleInput.Text = reminder.Title;
+                    _notesInput.Text = reminder.Notes;
+                    _datePicker.UpdateDate(
+                        reminder.ReminderDate.Year,
+                        reminder.ReminderDate.Month - 1,
+                        reminder.ReminderDate.Day);
+                    _timePicker.Hour = reminder.ReminderDate.Hour;
+                    _timePicker.Minute = reminder.ReminderDate.Minute;
+                }
+            }
+        }
+
+        private void SaveReminder()
+        {
+            try
+            {
+                var reminderDate = new DateTime(
+                    _datePicker.Year,
+                    _datePicker.Month + 1,
+                    _datePicker.DayOfMonth,
+                    _timePicker.Hour,
+                    _timePicker.Minute,
+                    0);
 
                 using (var db = new AppDbContext())
                 {
-                    db.Database.EnsureCreated();
-                    db.Reminders.Add(reminder);
-                    await db.SaveChangesAsync();
+                    Reminder reminder;
+                    if (_reminderId.HasValue && _reminderId != -1)
+                    {
+                        reminder = db.Reminders.Find(_reminderId);
+                        if (reminder == null) return;
+                    }
+                    else
+                    {
+                        reminder = new Reminder();
+                        db.Reminders.Add(reminder);
+                    }
+
+                    reminder.Title = _titleInput.Text;
+                    reminder.Notes = _notesInput.Text;
+                    reminder.ReminderDate = reminderDate;
+
+                    db.SaveChanges();
                 }
 
-                Toast.MakeText(this, "Przypomnienie zapisane!", ToastLength.Short).Show();
+                SetResult(Result.Ok);
                 Finish();
-            };
+            }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, $"Błąd: {ex.Message}", ToastLength.Long).Show();
+            }
         }
     }
 }
