@@ -5,10 +5,16 @@
     Zmiany w tym pliku mogą powodować niepoprawne zachowanie i zostaną utracone
     w przypadku ponownego wygenerowania zawartości.
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.companyname.Remindly" android:versionCode="1" android:versionName="1.0">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="com.companyname.Remindly" android:versionCode="1" android:versionName="1.0">
   <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
   <uses-permission android:name="android.permission.INTERNET" />
-  <application android:name="android.app.Application" android:allowBackup="true" android:appComponentFactory="androidx.core.app.CoreComponentFactory" android:debuggable="true" android:extractNativeLibs="true" android:label="@string/app_name" android:supportsRtl="true">
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+  <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+  <permission android:name="com.companyname.Remindly.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" android:protectionLevel="signature" />
+  <uses-permission android:name="com.companyname.Remindly.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+  <application android:name="android.app.Application" android:allowBackup="true" android:appComponentFactory="androidx.core.app.CoreComponentFactory" android:debuggable="true" android:extractNativeLibs="true" android:label="@string/app_name" android:supportsRtl="true" android:theme="@style/AppTheme">
     <activity android:name="com.companyname.Remindly.MainActivity" android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -16,6 +22,11 @@
       </intent-filter>
     </activity>
     <activity android:name="com.companyname.Remindly.AddReminderActivity" android:exported="false" />
+    <receiver android:name="com.companyname.Remindly.NotificationReceiver" android:enabled="true" android:exported="false">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+      </intent-filter>
+    </receiver>
     <activity android:name="crc64b3fe9a5ce9ab0f42.AddReminderActivity" android:label="Dodaj/Edytuj przypomnienie" />
     <activity android:name="crc64b3fe9a5ce9ab0f42.MainActivity" android:exported="true" android:label="Remindly">
       <intent-filter>
@@ -24,6 +35,8 @@
       </intent-filter>
     </activity>
     <activity android:name="crc64b3fe9a5ce9ab0f42.ReminderListActivity" android:label="Lista przypomnień" />
+    <receiver android:name="crc646b277bcdf0fa4a75.BootReceiver" android:enabled="true" android:exported="false" />
+    <receiver android:name="crc646b277bcdf0fa4a75.NotificationReceiver" android:directBootAware="true" android:enabled="true" android:exported="false" />
     <service android:name="crc64396a3fe5f8138e3f.KeepAliveService" />
     <receiver android:name="crc64a0e0a82d0db9a07d.BatteryBroadcastReceiver" android:enabled="true" android:exported="false" android:label="Essentials Battery Broadcast Receiver" />
     <receiver android:name="crc64a0e0a82d0db9a07d.EnergySaverBroadcastReceiver" android:enabled="true" android:exported="false" android:label="Essentials Energy Saver Broadcast Receiver" />
@@ -33,6 +46,25 @@
       <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/xamarin_essentials_fileprovider_file_paths" />
     </provider>
     <activity android:name="crc64a0e0a82d0db9a07d.WebAuthenticatorIntermediateActivity" android:configChanges="orientation|screenSize" />
-    <provider android:name="mono.MonoRuntimeProvider" android:authorities="com.companyname.Remindly.mono.MonoRuntimeProvider.__mono_init__" android:exported="false" android:initOrder="1999999999" />
+    <provider android:name="mono.MonoRuntimeProvider" android:authorities="com.companyname.Remindly.mono.MonoRuntimeProvider.__mono_init__" android:directBootAware="true" android:exported="false" android:initOrder="1999999999" />
+    <provider android:name="androidx.startup.InitializationProvider" android:authorities="com.companyname.Remindly.androidx-startup" android:exported="false" tools:node="merge">
+      <meta-data android:name="androidx.profileinstaller.ProfileInstallerInitializer" android:value="androidx.startup" />
+      <meta-data android:name="androidx.lifecycle.ProcessLifecycleInitializer" android:value="androidx.startup" />
+      <meta-data android:name="androidx.emoji2.text.EmojiCompatInitializer" android:value="androidx.startup" />
+    </provider>
+    <receiver android:name="androidx.profileinstaller.ProfileInstallReceiver" android:directBootAware="false" android:enabled="true" android:exported="true" android:permission="android.permission.DUMP">
+      <intent-filter>
+        <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+      </intent-filter>
+    </receiver>
   </application>
 </manifest>

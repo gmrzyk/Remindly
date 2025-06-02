@@ -25,16 +25,29 @@ namespace Remindly
             _notesInput = FindViewById<EditText>(Resource.Id.inputNotes);
             _datePicker = FindViewById<DatePicker>(Resource.Id.datePicker);
             _timePicker = FindViewById<TimePicker>(Resource.Id.timePicker);
+            
+            _reminderId = Intent.GetIntExtra("REMINDER_ID", -1);
             var saveButton = FindViewById<Button>(Resource.Id.btnSave);
 
-            _reminderId = Intent.GetIntExtra("REMINDER_ID", -1);
             if (_reminderId != -1)
             {
                 LoadReminderData();
                 saveButton.Text = "Zaktualizuj";
             }
 
-            saveButton.Click += (s, e) => SaveReminder();
+            saveButton.Click += (s, e) => 
+            {
+                try
+                {
+                    SaveReminder();
+                    SetResult(Result.Ok);
+                    Finish();
+                }
+                catch (Exception ex)
+                {
+                    Toast.MakeText(this, "Błąd zapisu: " + ex.Message, ToastLength.Long).Show();
+                }
+            };
         }
 
         private void LoadReminderData()
@@ -58,43 +71,34 @@ namespace Remindly
 
         private void SaveReminder()
         {
-            try
+            var reminderDate = new DateTime(
+                _datePicker.Year,
+                _datePicker.Month + 1,
+                _datePicker.DayOfMonth,
+                _timePicker.Hour,
+                _timePicker.Minute,
+                0);
+
+            using (var db = new AppDbContext())
             {
-                var reminderDate = new DateTime(
-                    _datePicker.Year,
-                    _datePicker.Month + 1,
-                    _datePicker.DayOfMonth,
-                    _timePicker.Hour,
-                    _timePicker.Minute,
-                    0);
-
-                using (var db = new AppDbContext())
+                Reminder reminder;
+                if (_reminderId.HasValue && _reminderId != -1)
                 {
-                    Reminder reminder;
-                    if (_reminderId.HasValue && _reminderId != -1)
-                    {
-                        reminder = db.Reminders.Find(_reminderId);
-                        if (reminder == null) return;
-                    }
-                    else
-                    {
-                        reminder = new Reminder();
-                        db.Reminders.Add(reminder);
-                    }
-
-                    reminder.Title = _titleInput.Text;
-                    reminder.Notes = _notesInput.Text;
-                    reminder.ReminderDate = reminderDate;
-
-                    db.SaveChanges();
+                    reminder = db.Reminders.Find(_reminderId);
+                    if (reminder == null)
+                        throw new Exception("Nie znaleziono przypomnienia do edycji");
+                }
+                else
+                {
+                    reminder = new Reminder();
+                    db.Reminders.Add(reminder);
                 }
 
-                SetResult(Result.Ok);
-                Finish();
-            }
-            catch (Exception ex)
-            {
-                Toast.MakeText(this, $"Błąd: {ex.Message}", ToastLength.Long).Show();
+                reminder.Title = _titleInput.Text;
+                reminder.Notes = _notesInput.Text;
+                reminder.ReminderDate = reminderDate;
+
+                db.SaveChanges();
             }
         }
     }

@@ -59,9 +59,21 @@
               "version": "[8.0.0, )",
               "autoReferenced": true
             },
+            "Xamarin.AndroidX.Core": {
+              "target": "Package",
+              "version": "[1.16.0.1, )"
+            },
+            "Xamarin.AndroidX.Legacy.Support.Core.Utils": {
+              "target": "Package",
+              "version": "[1.0.0.32, )"
+            },
             "Xamarin.Essentials": {
               "target": "Package",
               "version": "[1.8.1, )"
+            },
+            "Xamarin.Google.Android.Material": {
+              "target": "Package",
+              "version": "[1.12.0.3, )"
             }
           },
           "imports": [

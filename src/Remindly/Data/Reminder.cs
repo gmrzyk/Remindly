@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Remindly.Data
+﻿namespace Remindly.Data
 {
     public class Reminder
     {

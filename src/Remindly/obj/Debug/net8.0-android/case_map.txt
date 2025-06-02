@@ -1,10 +1,16 @@
+drawable\edittext_border;drawable\edittext_border
+drawable\ic_notification;drawable\ic_notification
+drawable\list_item_bg;drawable\list_item_bg
 layout\activity_add_reminder;layout\activity_add_reminder
 layout\activity_main;layout\activity_main
 layout\activity_reminder_list;layout\activity_reminder_list
+layout\reminder_item;layout\reminder_item
 mipmap\appicon;mipmap\appicon
 mipmap\appicon_background;mipmap\appicon_background
 mipmap\appicon_foreground;mipmap\appicon_foreground
 mipmap\appicon_round;mipmap\appicon_round
+values\colors;values\colors
 values\ic_launcher_background;values\ic_launcher_background
 values\strings;values\strings
+values\styles;values\styles
 xml\xamarin_essentials_fileprovider_file_paths;xml\xamarin_essentials_fileprovider_file_paths
